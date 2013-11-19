@@ -1,6 +1,15 @@
 pom.xml
-*jar
 /lib/
 /classes/
 /targets/
 .lein-deps-sum
+testinfo.edn
+/target/stale/extract-native.dependencies
+/target/repl-port
+/src/java/bing/KeywordPerformance.java
+/report_downloads/*
+/.nrepl-port
+/local_jars/~/.m2/com/microsoft/adintelligence/0.0.9/adintelligence-0.0.9.jar
+/local_jars/~/.m2/com/microsoft/adintelligence/0.0.9/adintelligence-0.0.9.pom
+/local_jars/~/.m2/com/microsoft/adintelligence/maven-metadata-local.xml
+/testinfo.clj
