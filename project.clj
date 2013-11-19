@@ -5,6 +5,7 @@
   :min-lein-version "2.0.0"
   :dependencies [[axis "1.4"]
                  [clj-http "0.7.7"]
+                 [com.datomic/datomic-free "0.8.4218"]
                  [com.microsoft/customermanagement "0.0.9"]
                  [com.microsoft/optimizer "0.0.9"]
                  [com.microsoft/reporting "0.0.9"]
@@ -12,8 +13,8 @@
                  [com.microsoft/bulk "0.0.9"]
                  [com.microsoft/campaignmanagement "0.0.9"]
                  [com.microsoft/customerbilling "0.0.9"]
-                 [into-edn "1.0.2"]
                  [clojure-csv/clojure-csv "2.0.1"]
+                 [into-edn "1.0.2"]
                  [me.raynes/fs "1.4.4"]
                  [org.clojure/clojure "1.5.1"]
                  [org.clojure/core.match "0.2.0"]

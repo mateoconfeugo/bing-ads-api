@@ -17,6 +17,25 @@
            [bingads.reporting.adapi ]
            [java.io File FileOutputStream]))
 
+(defn wait-for
+ "Invoke predicate every interval (default 10) seconds until it returns true,
+  or timeout (default 150) seconds have elapsed. E.g.:
+      (wait-for #(< (rand) 0.2) :interval 1 :timeout 10)
+  Returns nil if the timeout elapses before the predicate becomes true, otherwise
+  the value of the predicate on its last evaluation."
+ [predicate & {:keys [interval timeout]
+               :or {interval 10
+                    timeout 150}}]
+ (let [end-time (+ (System/currentTimeMillis) (* timeout 1000))]
+   (loop []
+     (if-let [result (predicate)]
+       result
+       (do
+         (Thread/sleep (* interval 1000))
+         (if (< (System/currentTimeMillis) end-time)
+           (recur)))))))
+
+
 (defn submit-generate-report
   "Request the report and returns the ReportRequestId that can be used to check report
    status and then used to download the report."
@@ -32,8 +51,7 @@
         response (.pollGenerateReport service request)]
     (.getReportRequestStatus response)))
 
-(def report-api-settings-graph {
-                                :credentials (fnk [{account-settings "testinfo.edn"}] (clojure.edn/read-string (slurp (format "%s/%s" (System/getProperty "user.dir") account-settings))))
+(def report-api-settings-graph {:credentials (fnk [{account-settings "testinfo.edn"}] (clojure.edn/read-string (slurp (format "%s/%s" (System/getProperty "user.dir") account-settings))))
                                 :download-path (fnk [{output-path nil}] (format "%s/%s" (System/getProperty "user.dir") (or output-path "report_downloads")))
                                 :locator (fnk [] (ReportingServiceLocator.))
                                 :api-namespace-uri (fnk [locator] (-> locator .getServiceName .getNamespaceURI))
