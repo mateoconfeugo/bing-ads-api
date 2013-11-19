@@ -1,16 +1,16 @@
-// Copyright 2013 Microsoft Corporation 
- 
-// Licensed under the Apache License, Version 2.0 (the "License"); 
-// you may not use this file except in compliance with the License. 
-// You may obtain a copy of the License at 
- 
-//    http://www.apache.org/licenses/LICENSE-2.0 
- 
-// Unless required by applicable law or agreed to in writing, software 
-// distributed under the License is distributed on an "AS IS" BASIS, 
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-// See the License for the specific language governing permissions and 
-// limitations under the License. 
+// Copyright 2013 Microsoft Corporation
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//    http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 import java.rmi.*;
 import java.net.*;
@@ -28,22 +28,23 @@ public class KeywordPerformance {
     private static BasicHttpBinding_IReportingServiceStub _service = null;
 
     // Specify your credentials.
-    
-    private static java.lang.String UserName = "<UserNameGoesHere>";
-    private static java.lang.String Password = "<PasswordGoesHere>";
-    private static java.lang.String DeveloperToken = "<DeveloperTokenGoesHere>";
-    private static long AccountId = <AccountIdGoesHere>;
-    private static long CampaignId = <CampaignIdGoesHere>;
-    
+
+    private static java.lang.String UserName = "";
+    private static java.lang.String Password = "";
+    private static java.lang.String DeveloperToken = "";
+    private static long AccountId = "";
+    private static long CampaignId = "";
+
     // Specify the file to download the report to. The file is
     // compressed so use the .zip file extension.
 
-    private static java.lang.String DownloadPath = "c:\\reports\\keywordperf.zip";
+    private static java.lang.String DownloadPath = "./keywordperf.zip";
 
-    public static void main(String[] args) {
-        
+    //    public static void main(String[] args) {
+    public  void doit(String[] args) {
+
     	// Confirm that the download folder exists; otherwise, exit.
-    	
+
     	String folder = DownloadPath.substring(0, DownloadPath.lastIndexOf('\\'));
         File dir = new File(folder);
 
@@ -66,13 +67,13 @@ public class KeywordPerformance {
             service.setHeader(namespace, "DeveloperToken", DeveloperToken);
             service.setHeader(namespace, "UserName", UserName);
             service.setHeader(namespace, "Password", Password);
-            
+
 
             // Build a keyword performance report request, including Format, ReportName, Aggregation,
             // Scope, Time, Filter, and Columns.
 
             KeywordPerformanceReportRequest report = new KeywordPerformanceReportRequest();
-            
+
             report.setFormat(ReportFormat.Tsv);
             report.setReportName("My Keyword Performance Report");
             report.setReturnOnlyCompleteData(false);
@@ -89,7 +90,7 @@ public class KeywordPerformance {
 
             report.setTime(new ReportTime());
             report.getTime().setPredefinedTime(ReportTimePeriod.Yesterday);
-            
+
             // You may either use a custom date range or predefined time.
             //report.getTime().setCustomDateRangeStart(new Date());
             //report.getTime().getCustomDateRangeStart().setMonth(9);
@@ -99,7 +100,7 @@ public class KeywordPerformance {
             //report.getTime().getCustomDateRangeEnd().setMonth(9);
             //report.getTime().getCustomDateRangeEnd().setDay(30);
             //report.getTime().getCustomDateRangeEnd().setYear(2013);
-            
+
             report.setFilter(new KeywordPerformanceReportFilter());
             report.getFilter().setDeviceType(new String[] {
                 DeviceTypeReportFilterNull._Computer,
@@ -107,7 +108,7 @@ public class KeywordPerformance {
             });
 
             // Specify the attribute and data report columns.
-            
+
             report.setColumns(new KeywordPerformanceReportColumn[] {
                 KeywordPerformanceReportColumn.TimePeriod,
                 KeywordPerformanceReportColumn.AccountId,
@@ -123,31 +124,31 @@ public class KeywordPerformance {
                 KeywordPerformanceReportColumn.Spend,
                 KeywordPerformanceReportColumn.QualityScore
             });
-            
+
             // You may optionally sort by any KeywordPerformanceReportColumn, and optionally
-            // specify the maximum number of rows to return in the sorted report. 
+            // specify the maximum number of rows to return in the sorted report.
 
             KeywordPerformanceReportSort keywordPerformanceReportSort = new KeywordPerformanceReportSort();
             keywordPerformanceReportSort.setSortColumn(KeywordPerformanceReportColumn.Clicks);
             keywordPerformanceReportSort.setSortOrder(SortOrder.Ascending);
             report.setSort(new KeywordPerformanceReportSort[] { keywordPerformanceReportSort });
-            
+
             report.setMaxRows(10);
-            
-            // SubmitGenerateReport helper method calls the corresponding Bing Ads _service operation 
+
+            // SubmitGenerateReport helper method calls the corresponding Bing Ads _service operation
             // to request the report identifier. The identifier is used to check report generation status
-            // before downloading the report. 
+            // before downloading the report.
 
             java.lang.String reportRequestId  = SubmitGenerateReport(report);
-            
+
             System.out.println("Report Request ID: " + reportRequestId + "\n");
-            
-            int waitTime = 1000 * 30 * 1;  
+
+            int waitTime = 1000 * 30 * 1;
             ReportRequestStatus reportRequestStatus = null;
 
             // This sample polls every 30 seconds up to 5 minutes.
             // In production you may poll the status every 1 to 2 minutes for up to one hour.
-            // If the call succeeds, stop polling. If the call or 
+            // If the call succeeds, stop polling. If the call or
             // download fails, the call throws a fault.
 
 
@@ -157,7 +158,7 @@ public class KeywordPerformance {
                 catch (InterruptedException ignore) {}
 
                 reportRequestStatus = PollGenerateReport(reportRequestId);
-                
+
                 System.out.printf("Report Request Status: %s\n", reportRequestStatus);
 
                 if (reportRequestStatus.getStatus() == ReportRequestStatusType.Success ||
@@ -285,21 +286,21 @@ public class KeywordPerformance {
     public static java.lang.String SubmitGenerateReport(ReportRequest report) throws RemoteException, Exception
     {
         SubmitGenerateReportRequest request = new SubmitGenerateReportRequest();
-        
+
         request.setReportRequest(report);
-        
+
         return service.submitGenerateReport(request).getReportRequestId();
     }
 
     // Checks the status of a report request. Returns a data object that contains both
-    // report status and download URL. 
+    // report status and download URL.
 
     public static ReportRequestStatus PollGenerateReport(java.lang.String reportRequestId) throws RemoteException, Exception
     {
         PollGenerateReportRequest request = new PollGenerateReportRequest();
-          
+
         request.setReportRequestId(reportRequestId);
-        
+
         return service.pollGenerateReport(request).getReportRequestStatus();
     }
 

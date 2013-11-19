@@ -1,16 +1,18 @@
-// Copyright 2013 Microsoft Corporation 
- 
-// Licensed under the Apache License, Version 2.0 (the "License"); 
-// you may not use this file except in compliance with the License. 
-// You may obtain a copy of the License at 
- 
-//    http://www.apache.org/licenses/LICENSE-2.0 
- 
-// Unless required by applicable law or agreed to in writing, software 
-// distributed under the License is distributed on an "AS IS" BASIS, 
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-// See the License for the specific language governing permissions and 
-// limitations under the License. 
+// Copyright 2013 Microsoft Corporation
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//    http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package bing;
 
 import java.text.*;
 import java.rmi.*;
@@ -33,7 +35,7 @@ public class EstimatedBid {
     private static java.lang.String DeveloperToken = "<DeveloperTokenGoesHere>";
     private static long AccountId = <AccountIdGoesHere>;
 
-    
+
     /**
      * @param args the command line arguments
      */
@@ -56,9 +58,9 @@ public class EstimatedBid {
 
             // Set the Currency, Keywords, Language, PublisherCountries, and TargetPositionForAds
             // for the estimated bid by keywords request.
-            
+
             Currency currency = Currency.USDollar;
-            
+
             KeywordAndMatchType[] keywordAndMatchTypes = new KeywordAndMatchType[2];
             MatchType[] matchTypes = new MatchType[] { MatchType.Exact, MatchType.Broad, MatchType.Phrase };
             keywordAndMatchTypes[0] = new KeywordAndMatchType();
@@ -67,27 +69,27 @@ public class EstimatedBid {
             keywordAndMatchTypes[1] = new KeywordAndMatchType();
             keywordAndMatchTypes[1].setKeywordText("delivery");
             keywordAndMatchTypes[1].setMatchTypes(matchTypes);
-            
+
             java.lang.String language = "English";
-            
+
             java.lang.String [] publisherCountries = new java.lang.String[] { "US" };
-            
+
             TargetAdPosition targetPositionForAds = TargetAdPosition.SideBar;
-            
-            // GetKeywordEstimatedBidByKeywords helper method calls the corresponding Bing Ads _service operation 
+
+            // GetKeywordEstimatedBidByKeywords helper method calls the corresponding Bing Ads _service operation
             // to request the KeywordEstimatedBids.
-            
+
             KeywordEstimatedBid[] keywordEstimatedBids = GetKeywordEstimatedBidByKeywords(
             	currency,
-                keywordAndMatchTypes, 
-                language, 
-                publisherCountries, 
+                keywordAndMatchTypes,
+                language,
+                publisherCountries,
                 targetPositionForAds
                 );
 
-            // GetAdGroupEstimatedBidByKeywords helper method calls the corresponding Bing Ads _service operation 
+            // GetAdGroupEstimatedBidByKeywords helper method calls the corresponding Bing Ads _service operation
             // to request the AdGroupEstimatedBid.
-            
+
             AdGroupEstimatedBid adGroupEstimatedBid = GetAdGroupEstimatedBidByKeywords(
                 currency,
                 keywordAndMatchTypes,
@@ -95,13 +97,13 @@ public class EstimatedBid {
                 publisherCountries,
                 targetPositionForAds
                 );
-			
+
             // Print the KeywordEstimatedBids
 
             if (keywordEstimatedBids != null)
             {
             	System.out.println("KeywordEstimatedBids\n");
-            	
+
                 for (KeywordEstimatedBid bid : keywordEstimatedBids)
                 {
                     if (bid == null)
@@ -120,10 +122,10 @@ public class EstimatedBid {
                         {
                             for (EstimatedBidAndTraffic estimatedBidAndTraffic : bid.getEstimatedBids())
                             {
-                            	System.out.println("    Estimated Minimum Bid: " + 
+                            	System.out.println("    Estimated Minimum Bid: " +
                                         currencyFmt.format(estimatedBidAndTraffic.getEstimatedMinBid()));
                                 System.out.println("  " + estimatedBidAndTraffic.getMatchType());
-                                System.out.println("    Average CPC: " + 
+                                System.out.println("    Average CPC: " +
                                         (estimatedBidAndTraffic.getAverageCPC() != null ? currencyFmt.format(estimatedBidAndTraffic.getAverageCPC()) : "null"));
                                 System.out.printf("    Estimated clicks per week: %d to %d%n",
                                 		estimatedBidAndTraffic.getMinClicksPerWeek(), estimatedBidAndTraffic.getMaxClicksPerWeek());
@@ -138,14 +140,14 @@ public class EstimatedBid {
                     }
                 }
             }
-            
+
             // Print the AdGroupEstimatedBid
-            
+
             System.out.println("AdGroupEstimatedBid\n");
-            
-            System.out.println("    Estimated Ad Group Bid: " + 
+
+            System.out.println("    Estimated Ad Group Bid: " +
                     currencyFmt.format(adGroupEstimatedBid.getEstimatedAdGroupBid()));
-            System.out.println("    Average CPC: " + 
+            System.out.println("    Average CPC: " +
                     (adGroupEstimatedBid.getAverageCPC() != null ? currencyFmt.format(adGroupEstimatedBid.getAverageCPC()) : "null"));
             System.out.printf("    Estimated clicks per week: %d to %d%n",
             		adGroupEstimatedBid.getMinClicksPerWeek(), adGroupEstimatedBid.getMaxClicksPerWeek());
@@ -249,17 +251,17 @@ public class EstimatedBid {
     }
 
     /**
-     * Get one or more keyword estimated bids corresponding to placement of your ad in the targeted position. 
+     * Get one or more keyword estimated bids corresponding to placement of your ad in the targeted position.
      */
 
-    public static KeywordEstimatedBid[] GetKeywordEstimatedBidByKeywords(Currency currency, KeywordAndMatchType[] keywordAndMatchTypes, 
+    public static KeywordEstimatedBid[] GetKeywordEstimatedBidByKeywords(Currency currency, KeywordAndMatchType[] keywordAndMatchTypes,
     		java.lang.String language, java.lang.String[] publisherCountries, TargetAdPosition targetPositionForAds) throws RemoteException, Exception
     {
         GetEstimatedBidByKeywordsRequest request = new GetEstimatedBidByKeywordsRequest();
-        
+
         // Set the Currency, Keywords, Language, PublisherCountries, and TargetPositionForAds
         // for the estimated bid by keywords request.
-        
+
         request.setCurrency(currency);
         request.setGetBidsAtLevel(0); // Set GetBidsAtLevel to 0 to get a list of KeywordEstimatedBid.
         request.setKeywords(keywordAndMatchTypes);
@@ -271,17 +273,17 @@ public class EstimatedBid {
     }
 
     /**
-     * Get one or more ad group estimated bids corresponding to placement of your ad in the targeted position. 
+     * Get one or more ad group estimated bids corresponding to placement of your ad in the targeted position.
      */
 
-    public static AdGroupEstimatedBid GetAdGroupEstimatedBidByKeywords(Currency currency, KeywordAndMatchType[] keywordAndMatchTypes, 
+    public static AdGroupEstimatedBid GetAdGroupEstimatedBidByKeywords(Currency currency, KeywordAndMatchType[] keywordAndMatchTypes,
     		java.lang.String language, java.lang.String[] publisherCountries, TargetAdPosition targetPositionForAds) throws RemoteException, Exception
     {
         GetEstimatedBidByKeywordsRequest request = new GetEstimatedBidByKeywordsRequest();
-        
+
         // Set the Currency, Keywords, Language, PublisherCountries, and TargetPositionForAds
         // for the estimated bid by keywords request.
-        
+
         request.setCurrency(currency);
         request.setGetBidsAtLevel(2); // Set GetBidsAtLevel to 2 to get one AdGroupEstimatedBid.
         request.setKeywords(keywordAndMatchTypes);
